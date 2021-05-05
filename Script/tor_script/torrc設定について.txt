@@ -1,0 +1,278 @@
+■設定パターンファイル
+・Windowsの場合 
+Tor Browser\Browser\TorBrowser\Data\Tor\torrc ファイル
+
+・macの場合 
+Tor Browser.app/Contents/Resources/TorBrowser/Tor/torrc-defaults 
+を編集(ファイルパスにスペースが入っているので注意)する。
+・参考サイト
+https://qiita.com/keiya/items/589df899ffd167f4c909
+
+・Linuxの場合
+　TorBrowser
+tor-browser_ja-JP/Browser/TorBrowser/Data/Tor/torrc
+　Tor
+/etc/tor/torrc
+
+==================================================
+■設定内容
+ExludeNodes - 使用しないサーバー
+ExludeExitNodes - 出口ノードに使用しないサーバー
+NumEntryGuards -  サーバーの経由数
+StrictNodes - 以上の設定を厳守するか(1 = 厳守, 0 = 緩やか)
+EntryNodes - 入口ノード指定
+ExitNodes - 出口ノード指定
+
+CircuitBuildTimeout - タイムアウトの秒数指定。デフォルト設定は60sec
+example:
+CircuitBuildTimeout 30
+
+NewCircuitPeriod - 回路再構成までの時間を秒数で指定
+example:
+NewCircuitPeriod 20
+
+MaxCircuitDirtiness - 回路のつなぎ変えまでの秒数。極端に短くするとその都度様々なノードに接続していく。
+匿名性向上に役立つものの、セッションを使用するサイトでは正常なログインが行えなくなる。
+example:
+MaxCircuitDirtiness 15
+
+BadNodeなど情報を抜き取る可能性があるサーバーは必要に応じて除外する。
+・BadNode
+soltor0,dexter,BSDNow2016,Netwerxtorexitusa,UncleEnzo,vegms,MARS,Unnamed,theyellowsubmarine,kasperskytor,ecramrelay2,$6BF913C31A47E020637121014DB2AFE0877BD31B,143.106.60.70,199.249.230.102,23.129.64.180,SlowServer
+
+■Javascriptの無効化
+1:アドレスバーにabout:configと入力。
+編集は自己責任という警告を承諾するとTorの編集が可能になる
+2:about:config内の検索バーにjavascript.enabledと記入し、
+一致する項目の設定をfalseにする(許可する場合はtrue)
+
+==================================================
+■【tor_country.py】について
+カレント上に配置されている"tor_country.py"は
+torrcへ投入するための設定を生成するスクリプトである。
+指定した内容を画面上に出力する。それをtorrcへコピー&ペーストして使用する。
+
+デフォルトは普段のブラウジングを想定して、
+日本国内のノードのみでルーティングを行う設定となっているため最も匿名性が低い。
+求める設定の条件に合わせて以下のパターンをソースコードに反映させることで、
+設定ファイルを出力できる。
+
+■ソースコードについて
+entry_countries, include_countries, exit_countries, forbid_countries の設定はお好みで。
+JPにExitがなくて繋がらない場合、近い国のコードを入れると良い。
+それぞれ EntryNodes, ExcludeNodes のインバース(逆), ExitNodes に関係してくる。
+forbid_countries は ExcludeCountries に必ず追加する国。
+
+なお、国コードは2文字の ISO 3166-1 alpha-2 である。
+
+python tor_country.py > "ファイル名"
+↑標準出力をコピペでも問題ない。
+
+■設定項目について
+entry_countries - EntryNodesを指定
+include_countries - ExcludeNodesを指定(all - include)
+exit_countries - ExitNodesを指定
+forbid_countries - ExcludeNodesを指定(forbidのみ)
+
+用途に応じた設定方法を以下の各項目に記載。
+
+■実行方法
+・ファイルを編集後、以下コマンドを実行
+python countrycode.py 
+
+・Macの場合、以下コマンドでクリップボードにコピーされる
+python countrycode.py | pbcopy
+
+==================================================
+【匿名性+】
+速度を少し犠牲にし、匿名性を少しあげる。
+経由する国は日本から出ている海底ケーブルで、1hop以内に到達できる場所。
+
+entry_countries = set({
+  'JP',
+})
+
+include_countries = set({
+  'JP',
+  'KR',
+  'HK',
+  'TW',
+  'SG',
+  'PH',
+})
+
+exit_countries = set({
+  'JP',
+})
+
+==================================================
+【匿名性++】
+Entry(Guard)ノードだけをJPにし、速度をある犠牲にし匿名性を上げる。
+
+entry_countries = set({
+  'JP',
+})
+
+include_countries = set({
+  'JP',
+  'KR',
+  'HK',
+  'TW',
+  'SG',
+  'PH',
+})
+
+exit_countries = set({
+  'JP',
+  'KR',
+  'HK',
+  'TW',
+  'SG',
+  'PH',
+})
+
+==================================================
+【匿名性+++】
+速度を犠牲にし匿名性をさらに上げる。
+
+entry_countries = set({
+  'JP',
+  'KR',
+  'HK',
+  'TW',
+  'SG',
+  'PH',
+})
+
+include_countries = set({
+  'JP',
+  'KR',
+  'HK',
+  'TW',
+  'SG',
+  'PH',
+})
+
+exit_countries = set({
+  'JP',
+  'KR',
+  'HK',
+  'TW',
+  'SG',
+  'PH',
+})
+
+==================================================
+【匿名性++++】
+速度をかなり犠牲にし匿名性をさらに上げる（Torの標準レベル）。
+Torのデフォルト設定。特に EntryNodes, ExitNodes, ExcludeNodes を指定しない。
+
+==================================================
+【匿名性++++ & 安全性+ : スパイ協定を結んでいる国をExcludeNodesに追加する場合】
+
+重要な通信をする場合、設定によって速度は低速になるが、この設定を行う。
+
+forbid_countries に1つでも国を追加すると、上記プログラムは "除外" モードになり、
+forbid_countries への通信を一切行わない設定を出力する。
+
+1.entry_countries, exit_countries を空にする。
+2.forbid_countries に以下を追加する。
+
+■【5-eyes "UKUSA Agreement" を除く場合】
+UKUSA協定の構成国アメリカ、イギリス、カナダ、オーストラリア、ニュージーランドをTor Circuitから除外するよう設定する。
+
+# 5-eyes
+  'US',
+  'GB',
+  'CA',
+  'AU',
+  'NZ',
+
+==================================================
+■【9-eyes を除く場合】
+5-eyesに加え、デンマーク、フランス、オランダ、ノルウェーの4カ国を加える。
+
+  # 5-eyes
+  'US',
+  'GB',
+  'CA',
+  'AU',
+  'NZ',
+  # 9-eyes
+  'DK',
+  'FR',
+  'NL',
+  'NO',
+==================================================
+■【14-Eyes "SSEUR" を除く場合】
+9-eyesに加え、ドイツ、ベルギー、イタリア、スペイン、スウェーデンを加える。SSEURとも。
+
+  # 5-eyes
+  'US',
+  'GB',
+  'CA',
+  'AU',
+  'NZ',
+  # 9-eyes
+  'DK',
+  'FR',
+  'NL',
+  'NO',
+  # 14-eyes
+  'DE',
+  'BE',
+  'IT',
+  'ES',
+  'SE',
+==================================================
+■【41-eyes を除く場合】
+14-eyesに加え、オーストリア、チェコ、ギリシア、ハンガリー、アイスランド、日本、
+ルクセンブルク、ポーランド、ポルトガル、韓国、スイス、トルコを加える。
+
+
+  # 5-eyes
+  'US',
+  'GB',
+  'CA',
+  'AU',
+  'NZ',
+  # 9-eyes
+  'DK',
+  'FR',
+  'NL',
+  'NO',
+  # 14-eyes
+  'DE',
+  'BE',
+  'IT',
+  'ES',
+  'SE',
+  # 41-eyes
+  'AT',
+  'CZ',
+  'GR',
+  'HU',
+  'IS',
+  'JP',
+  'LU',
+  'PL',
+  'PT',
+  'KR',
+  'CH',
+  'TR',
+
+==================================================
+■VPN接続について
+VPNを選ぶ基準としては、ノーログ(ログを取っていない)という点が重要
+
+・無料VPN
+ProtonVPN - ノーログ、しかし低速
+
+・有料VPN
+Mullvad - 一番おすすめ。ノーログかつ登録にメアドが不要、安価 -->詳しい記事を書きました
+NodeVPN - ノーログ、しかしハッキングされたことがある。パナマに所在地。現在アメリカが手を引いて独立している。
+ExpressVPN - ノーログ、ただ少し高価。イギリス領ヴァージン諸島で運営。今まで第三国、機関からログ開示の要請を受けた事もなく、通信データを記録していない
+
+基本的にVPNはVPN接続後にTorを利用するTor over VPNが使われている。
+ノーログの場合はTor over VPNでもセキュリティに問題はないかと思われる。
+

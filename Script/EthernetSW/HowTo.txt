@@ -1,0 +1,27 @@
+■解説
+・2行目はIPアドレスの変更
+
+netsh interface ipv4 set address name="イーサネット" source=static address=xxx.xxx.xxx.xxx mask=xxx.xxx.xxx.xxx gateway=xxx.xxx.xxx.xxx
+↓
+netsh interface ipv4 set add name="イーサネット" source=static addr="xxx.xxx.xxx.xxx" mask="255.255.255.0" gateway=""
+上記の記述でも問題ない
+
+・3行目は優先DNSサーバの変更
+・4行目は代替DNSサーバの変更
+上記の2つの設定は必要に応じて設定を行えばよい
+デフォルトではコメントアウトとしておく。
+
+nameの値"イーサネット"は
+1. 赤丸部分を右クリック→プロパティを選択
+2. 青色部分をクリック
+3. 緑矢印の名前
+から確認。
+
+====================
+■X240の場合
+・有線：イーサネット
+・無線：Wi-Fi
+====================
+
+※ソースコードを作る際は、文字コードをShift JISにすること。
+

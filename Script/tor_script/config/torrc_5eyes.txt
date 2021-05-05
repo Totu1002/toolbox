@@ -1,0 +1,3 @@
+StrictNodes 1
+ExcludeNodes SlowServer,127.0.0.1,{nz},{gb},{au},{ca},{us}
+NumEntryGuards 5

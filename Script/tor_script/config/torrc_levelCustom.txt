@@ -1,0 +1,5 @@
+ExcludeNodes SlowServer,127.0.0.1,{de},{nl},{nz},{gb},{be},{us},{dk},{it},{es},{ca},{au},{no},{se},{fr}
+ExcludeExitNodes {jp},{us},{gb},{ca},{au},{nz},{dk},{fr},{nl},{no},{de},{be},{it},{es},{il},{sg},{kr},{se},{bg},{cz},{fi},{hu},{ie},{lv},{lt},{lu},{ro},{se},{ch},{ru},{hk},{ja},127.0.0.1
+NumEntryGuards 15
+StrictNodes 1
+
