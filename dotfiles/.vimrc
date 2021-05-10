@@ -62,3 +62,30 @@ set tabstop=2
 set smartindent
 "コメントの色を水色
 hi Comment ctermfg=3
+
+set nocompatible
+filetype off
+set rtp+=~/.vim/bundle/Vundle.vim
+call vundle#begin()
+
+" PHP用辞書の追加
+autocmd FileType php,ctp :set dictionary=~/.vim/dict/php.dict
+
+" Vundleの導入 
+Plugin 'VundleVim/Vundle.vim'
+
+" 導入したいプラグインを以下に列挙
+" Plugin '[Github Author]/[Github repo]' の形式で記入
+Bundle 'Shougo/neocomplcache'
+Bundle 'Shougo/unite.vim'
+Bundle 'thinca/vim-ref'
+Bundle 'thinca/vim-quickrun'
+
+call vundle#end()
+filetype plugin indent on
+
+"その他のカスタム設定を以下に書く
+" バックスペースで補完のポップアップを閉じる
+"inoremap <expr><BS> neocomplete#smart_close_popup()."\<C-h>"
+"inoremap <expr><CR>  neocomplcache#smart_close_popup() . "\<CR>"
+inoremap <expr><TAB>  pumvisible() ? "\<C-n>" : "\<TAB>"
